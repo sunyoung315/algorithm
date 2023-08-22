@@ -1,4 +1,4 @@
-package BOJ_10814_나이순_정렬;
+package boj_10814_나이순_정렬;
 
 import java.util.Scanner;
 

@@ -1,11 +1,11 @@
-package BOJ_17413_단어_뒤집기_2;
+package boj_17413_단어_뒤집기_2;
 
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Stack;
 
-public class Solution2 {
+public class Main_stack {
 	public static Stack<String> stack = new Stack<>();
+	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		
@@ -13,7 +13,6 @@ public class Solution2 {
 		String str = sc.nextLine();
 		sc.close();
 		String[] sentence = str.split("");
-		
 		
 		String[] answer = new String[str.length()];
 		
@@ -33,24 +32,23 @@ public class Solution2 {
 			
 			//2. 괄호X
 			}else {
-				while(!sentence[i].equals(" ")) {
-					if(!sentence[i].equals("<")) {
-						stack.push(sentence[i++]);
-//						System.out.println(stack);
-//						System.out.println(Arrays.toString(answer));
-					}
-				}
-				while(!stack.isEmpty()) {
-					answer[idx++] = stack.pop();
-//					System.out.println("stack=" + stack);
-//					System.out.println("ans=" + Arrays.toString(answer));
+				while(i < sentence.length && !sentence[i].equals(" ") && !sentence[i].equals("<")) {
+					stack.push(sentence[i++]);					
 				}
 				
-				answer[idx++] = sentence[i++];
+				while(!stack.isEmpty()) {
+					answer[idx++] = stack.pop();
+				}
+				
+				if(idx < answer.length && i < sentence.length && !sentence[i].equals("<")) {
+					answer[idx++] = sentence[i++];
+				}
 			}
 		}
 		
-		System.out.println(Arrays.toString(answer));
+		for(i = 0; i < answer.length; i++) {
+			System.out.print(answer[i]);
+		}
 		
 	}//main
-}
+}//class

@@ -1,9 +1,9 @@
-package BOJ_17413_단어_뒤집기_2;
+package boj_17413_단어_뒤집기_2;
 
 import java.util.Scanner;
 import java.util.Stack;
 
-public class Solution {
+public class Main_sb {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
@@ -23,10 +23,6 @@ public class Solution {
 			//1. 괄호O
 			//열린 괄호'<'가 나오면
 			if(str.charAt(i) == '<') {
-				//rev가 있으면 sb에 rev를 뒤집어서 추가한 후,
-				if(rev != null) {
-					sb.append(rev.reverse());
-				}
 				//닫힌 괄호 '>'가 나올 때까지 sb에 추가
 				do { 
 					sb.append(str.charAt(i++));
@@ -37,7 +33,16 @@ public class Solution {
 			
 			//2. 괄호X
 			}else {
-				rev.append(str.charAt(i++));					
+				while(i < str.length() && str.charAt(i) != ' ' && str.charAt(i) != '<') {
+					rev.append(str.charAt(i++));	
+				}
+				
+				sb.append(rev.reverse());
+				rev.setLength(0);
+
+				if(i < str.length() && str.charAt(i) == ' ') {
+					sb.append(str.charAt(i++));	
+				}
 			}
 		}
 		System.out.println(sb);
