@@ -1,4 +1,4 @@
-package silver.boj_15663_N과M_9;
+ package silver.boj_15663_N과M_9;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,6 +43,7 @@ public class Main {
 
 	static void perm(int depth) {
 		//기저파트
+		//list.add(nums); 주소를 담아버리니 똑같은 것들이 계속 나오는거 같아 나중에 모아서 봤을떄.
 		if(depth == M) {
 			for(int i = 0; i < M; i++) {
 				sb.append(out[i] + " ");
