@@ -34,8 +34,8 @@ public class Solution {
 			//1. 가로 활주로 탐색
 			out: for(int r = 0; r < N; r++) {
 				//높이가 동일한 연속된 지형의 개수
-				int sameHeight = 0;
-				for(int c = 1; c < N;) {
+				int sameHeight = 1;
+				for(int c = 1; c < N; ) {
 					//1-1. 이전 지형의 높이와 2 이상 차이가 나면 경사로 설치 불가능
 					//(-> 경사로의 높이가 1로 고정되어 있음)
 					if(Math.abs(map[r][c] - map[r][c-1]) >= 2) {
@@ -47,23 +47,22 @@ public class Solution {
 						c++;
 					}
 					//1-3. 높이가 1만큼 높아지는데 앞에 경사로를 설치할 길이가 모자라는 경우 경사로 설치 불가능
-					else if(map[r][c] - map[r][c-1] == 1 && sameHeight < X-1) {
+					else if(map[r][c] - map[r][c-1] == 1 && sameHeight < X) {
 						continue out;
 					}
 					//1-4. 높이가 1만큼 높아지는데 앞에 경사로를 설치할 길이가 충분하므로 계속 탐색
-					else if(map[r][c] - map[r][c-1] == 1 && sameHeight >= X-1) {
-						sameHeight = 0;
+					else if(map[r][c] - map[r][c-1] == 1 && sameHeight >= X) {
+						sameHeight = 1;
 						c++;
 					}
 					//1-5. 높이가 1만큼 낮아지는 경우,뒤에 같은 높이의 지형이 있지 않으면 경사로 설치 불가능
 					else if(map[r][c] - map[r][c-1] == -1) {
-						sameHeight = 0;
 						for(int k = 0; k < X; k++) {
-							if(c+k >= N)
-								continue out;
-							else if(map[r][c] != map[r][c+k])
-								continue out;
+							if(c+k >= N) continue out;
+							else
+								if(map[r][c+k] != map[r][c]) continue out;
 						}
+						sameHeight = 0;
 						c += X;
 					}
 				}//c
@@ -74,8 +73,8 @@ public class Solution {
 			//2. 세로 활주로 탐색
 			out: for(int c = 0; c < N; c++) {
 				//높이가 동일한 연속된 지형의 개수
-				int sameHeight = 0;
-				for(int r = 1; r < N;) {
+				int sameHeight = 1;
+				for(int r = 1; r < N; ) {
 					//1-1. 이전 지형의 높이와 2 이상 차이가 나면 경사로 설치 불가능
 					//(-> 경사로의 높이가 1로 고정되어 있음)
 					if(Math.abs(map[r][c] - map[r-1][c]) >= 2) {
@@ -87,23 +86,22 @@ public class Solution {
 						r++;
 					}
 					//1-3. 높이가 1만큼 높아지는데 앞에 경사로를 설치할 길이가 모자라는 경우 경사로 설치 불가능
-					else if(map[r][c] - map[r-1][c] == 1 && sameHeight < X-1) {
+					else if(map[r][c] - map[r-1][c] == 1 && sameHeight < X) {
 						continue out;
 					}
 					//1-4. 높이가 1만큼 높아지는데 앞에 경사로를 설치할 길이가 충분하므로 계속 탐색
-					else if(map[r][c] - map[r-1][c] == 1 && sameHeight >= X-1) {
-						sameHeight = 0;
+					else if(map[r][c] - map[r-1][c] == 1 && sameHeight >= X) {
+						sameHeight = 1;
 						r++;
 					}
 					//1-5. 높이가 1만큼 낮아지는 경우,뒤에 같은 높이의 지형이 있지 않으면 경사로 설치 불가능
 					else if(map[r][c] - map[r-1][c] == -1) {
-						sameHeight = 0;
 						for(int k = 0; k < X; k++) {
-							if(r+k >= N)
-								continue out;
-							else if(map[r][c] != map[r+k][c])
-								continue out;
+							if(r+k >= N) continue out;
+							else
+								if(map[r+k][c] != map[r][c]) continue out;
 						}
+						sameHeight = 0;
 						r += X;
 					}
 				}//c
