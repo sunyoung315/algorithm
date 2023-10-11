@@ -1,4 +1,4 @@
-package d3.swea_2806_N_Queen;
+package Fail.swea_2806_N_Queen;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

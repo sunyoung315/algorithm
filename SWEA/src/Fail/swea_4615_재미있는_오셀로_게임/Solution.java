@@ -1,4 +1,4 @@
-package d3.swea_4615_재미있는_오셀로_게임;
+package Fail.swea_4615_재미있는_오셀로_게임;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
