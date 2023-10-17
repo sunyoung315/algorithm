@@ -29,6 +29,7 @@ public class Main {
 	static int N, M, K;
 	static List<FireBall>[][] board;
 	static Queue<FireBall> q;
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -52,9 +53,9 @@ public class Main {
 		for(int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine());
 			//위치 r행
-			int r = Integer.parseInt(st.nextToken());
+			int r = Integer.parseInt(st.nextToken())-1;
 			//위치 c열
-			int c = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken())-1;
 			//질량
 			int m = Integer.parseInt(st.nextToken());
 			//속력
@@ -66,120 +67,101 @@ public class Main {
 			board[r][c].add(new FireBall(r, c, m, s, d));
 		}//입력 끝
 		
-//		for(int r = 0; r < N; r++) {
-//			for(int c = 0; c < N; c++) {
-//				System.out.print(board[r][c] + " ");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-//		System.out.println(q);
-		
 		for(int k = 1; k <= K; k++) {
 			move();
 		}
-		
+
 		int sum = 0;
-		for(int r = 0; r < N; r++) {
-			for(int c = 0; c < N; c++) {
-//				System.out.print(board[r][c] + " ");
-				if(board[r][c].size() > 0)
-					sum += board[r][c].get(0).m;
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if(board[i][j].size() != 0) {
+					sum += sum(board[i][j]);
+				}
 			}
-//			System.out.println();
 		}
 		System.out.println(sum);
 		
 	}//main
-	
-	static void move() {
-		for(int i = 1; i <= M; i++) {
-			FireBall curr = q.poll();
-			board[curr.r][curr.c].remove(0);
 
-			int nextR = (curr.r + dr[curr.d] * curr.s) % N ;
+	static int sum(List<FireBall> list) {
+		int sum = 0;
+		for(int i = 0; i < list.size(); i++) {
+			sum += list.get(i).m;
+		}
+		return sum;
+	}
+
+	static void move() {
+		while(!q.isEmpty()) {
+			FireBall curr = q.poll();
+			int R = curr.r;
+			int C = curr.c;
+			int M = curr.m;
+			int D = curr.d;
+			int S = curr.s;
+			
+			int nextR = (R + dr[D] * S) % N;
+			int nextC = (C + dc[D] * S) % N;
 			if(nextR < 0) nextR += N;
-			int nextC = (curr.c + dc[curr.d] * curr.s) % N; 
 			if(nextC < 0) nextC += N;
 			
-			board[nextR][nextC].add(new FireBall(nextR, nextC, curr.m, curr.s, curr.d));
-			q.add(new FireBall(nextR, nextC, curr.m, curr.s, curr.d));
-			
-			for(int r = 0; r < N; r++) {
-				for(int c = 0; c < N; c++) {
-					System.out.print(board[r][c] + " ");
-				}
-				System.out.println();
-			}
-			System.out.println();
-			
-
-		}//i
+			board[R][C].remove(0);
+			board[nextR][nextC].add(new FireBall(nextR, nextC, M, S, D));
+		}
 		
 		for(int i = 0; i < N; i++) {
 			for(int j = 0; j < N; j++) {
 				if(board[i][j].size() >= 2) {
 					combine(i, j, board[i][j]);
+				}else if(board[i][j].size() == 1) {
+					q.add(new FireBall(i, j, board[i][j].get(0).m, board[i][j].get(0).s, board[i][j].get(0).d));
 				}
-			}//j
-		}//i
-		
-	}//move
+			}
+		}
+	}
 
 	static void combine(int r, int c, List<FireBall> list) {
-		int mSum = 0;
-		int sSum = 0;
 		List<Integer> odd = new ArrayList<>();
 		List<Integer> even = new ArrayList<>();
+		
+		int mSum = 0;
+		int sSum = 0;
 		for(int i = 0; i < list.size(); i++) {
 			mSum += list.get(i).m;
 			sSum += list.get(i).s;
-			if(list.get(i).d % 2 == 0) even.add(list.get(i).d);
-			else odd.add(list.get(i).d);
+			
+			if(list.get(i).d % 2 == 1) odd.add(list.get(0).d);
+			else even.add(list.get(i).d);
 		}
-
+		
 		int newM = mSum / 5;
 		int newS = sSum / list.size();
 		
-		M -= board[r][c].size();
-		board[r][c].clear();
-		
 		if(newM != 0) {
-			if(even.size() == 0 || odd.size() == 0) {
-				for(int dir = 0; dir < 8; dir += 2) {
-					int nextR = r + dr[dir] * newS;
-					int nextC = c + dc[dir] * newS;
-					
-					if(nextR < 0) nextR += N;
-					if(nextC < 0) nextC += N;
-					
-					q.add(new FireBall(nextR, nextC, newM, newS, dir));
-					board[nextR][nextC].add(new FireBall(nextR, nextC, newM, newS, dir));
-					M++;
-				}
+			if(odd.size() == 0 || even.size() == 0) {
+				board[r][c].clear();
+				board[r][c].add(new FireBall(r, c, newM, newS, 0));
+				q.add(new FireBall(r, c, newM, newS, 0));
+				board[r][c].add(new FireBall(r, c, newM, newS, 2));
+				q.add(new FireBall(r, c, newM, newS, 2));
+				board[r][c].add(new FireBall(r, c, newM, newS, 4));
+				q.add(new FireBall(r, c, newM, newS, 4));
+				board[r][c].add(new FireBall(r, c, newM, newS, 6));
+				q.add(new FireBall(r, c, newM, newS, 6));
 			}else {
-				for(int dir = 1; dir < 8; dir += 2) {
-					int nextR = r + dr[dir] * newS;
-					int nextC = c + dc[dir] * newS;
-					
-					if(nextR < 0) nextR += N;
-					if(nextC < 0) nextC += N;
-					
-					q.add(new FireBall(nextR, nextC, newM, newS, dir));
-					board[nextR][nextC].add(new FireBall(nextR, nextC, newM, newS, dir));
-					M++;
-				}
+				board[r][c].clear();
+				board[r][c].add(new FireBall(r, c, newM, newS, 1));
+				q.add(new FireBall(r, c, newM, newS, 1));
+				board[r][c].add(new FireBall(r, c, newM, newS, 3));
+				q.add(new FireBall(r, c, newM, newS, 3));
+				board[r][c].add(new FireBall(r, c, newM, newS, 5));
+				q.add(new FireBall(r, c, newM, newS, 5));
+				board[r][c].add(new FireBall(r, c, newM, newS, 7));
+				q.add(new FireBall(r, c, newM, newS, 7));
 			}
+		}else {
+			board[r][c].clear();
 		}
-		
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < N; j++) {
-				if(board[i][j].size() >= 2) {
-					combine(i, j, board[i][j]);
-				}
-			}//j
-		}//i
-
-	}//combine
-
+	}
+	
 }//class
