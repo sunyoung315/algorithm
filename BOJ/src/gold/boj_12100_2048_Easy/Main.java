@@ -3,12 +3,11 @@ package gold.boj_12100_2048_Easy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
 	
-	static int[][] board;
+	static int[][] board, copy;
 	static int N, max, cnt;
 	//Up, Down, Left, Right
 	static int[] p = {1, 2, 3, 4}; 
@@ -19,80 +18,40 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		board = new int[N][N];
-		
+		copy = new int[N][N];
 		StringTokenizer st;
 		for(int r = 0; r < N; r++) {
 			st = new StringTokenizer(br.readLine());
 			for(int c = 0; c < N; c++) {
 				board[r][c] = Integer.parseInt(st.nextToken());
+				copy[r][c] = board[r][c];
 			}
 		}//입력끝
 		
 		out = new int[5];
 		max = 0;
-		cnt = 0;
 		perm(0);
-		System.out.println(cnt);
+		
 		System.out.println(max);
-
-
 		
 	}//main
 	
 	static void perm(int depth) {
 		//기저파트
 		if(depth == 5) {
+			copy();
 			for(int k = 0; k < 5; k++) {
 				if(out[k] == 1) MoveUp();
 				else if(out[k] == 2) MoveDown();
 				else if(out[k] == 3) MoveLeft();
-				else MoveRight();
-//				if(out[k] == 1) {
-//					if(MoveUp()) {
-//						for(int i = 0; i < N; i++) {
-//							for(int j = 0; j < N; j++) {
-//								max = board[i][j] > max ? board[i][j] : max;
-//							}
-//						}
-//					}
-//				}
-//				else if(out[k] == 2) {
-//					if(MoveDown()) {
-//						for(int i = 0; i < N; i++) {
-//							for(int j = 0; j < N; j++) {
-//								max = board[i][j] > max ? board[i][j] : max;
-//							}
-//						}
-//					}
-//				}
-//				else if(out[k] == 3) {
-//					if(MoveLeft()) {
-//						for(int i = 0; i < N; i++) {
-//							for(int j = 0; j < N; j++) {
-//								max = board[i][j] > max ? board[i][j] : max;
-//							}
-//						}
-//					}
-//				}
-//				else {
-//					if(MoveRight()) {
-//						for(int i = 0; i < N; i++) {
-//							for(int j = 0; j < N; j++) {
-//								max = board[i][j] > max ? board[i][j] : max;
-//							}
-//						}
-//					}
-//				}
-			}
-			cnt++;
-			for(int i = 0; i < N; i++) {
-				for(int j = 0; j < N; j++) {
-					max = board[i][j] > max ? board[i][j] : max;
-					System.out.print(board[i][j] + " ");
+				else if(out[k] == 4)MoveRight();
+				
+				for(int i = 0; i < N; i++) {
+					for(int j = 0; j < N; j++) {
+						max = board[i][j] > max ? board[i][j] : max;
+					}
 				}
-				System.out.println();
 			}
-			System.out.println();
 			return;
 		}
 		//재귀파트
@@ -192,5 +151,13 @@ public class Main {
 		}//r
 		return flag;
 	}//MoveDown
+	
+	static void copy() {
+		for(int r = 0; r < N; r++) {
+			for(int c = 0; c < N; c++) {
+				board[r][c] = copy[r][c];
+			}
+		}
+	}
 	
 }//class
