@@ -4,23 +4,23 @@ class Solution {
     public int[] solution(int[] numbers) {
         int[] answer = {};
         
-        // TreeSet<Integer> treeset = new TreeSet<>();
-        HashSet<Integer> hashSet = new HashSet<>();
+        TreeSet<Integer> ts = new TreeSet<>();
         
-        for(int i = 0; i < numbers.length - 1; i++) {
+        for(int i = 0; i < numbers.length; i++) {
             for(int j = i + 1; j < numbers.length; j++) {
-                // treeset.add(numbers[i] + numbers[j]);
-                hashSet.add(numbers[i] + numbers[j]);
+                ts.add(numbers[i] + numbers[j]);
             }
         }
         
-        // answer = new int[treeset.size()];
-        // for(int i = 0; i < answer.length; i++) {
-        //     answer[i] = treeset.pollFirst();
-        // }
+        answer = new int[ts.size()];
         
-        // return answer;
+        int idx = 0;
+        Iterator<Integer> iter = ts.iterator();
+        while(iter.hasNext()) {
+            answer[idx++] = iter.next().intValue();
+        }
+           
         
-        return hashSet.stream().sorted().mapToInt(Integer::intValue).toArray();
+        return answer;
     }
 }
