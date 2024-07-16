@@ -3,13 +3,13 @@ import java.util.LinkedList;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        int[] answer = {};
         Queue<Integer> queue = new LinkedList<>();
         
         for(int i = 0; i < progresses.length; i++) {
             // 각 기능별 배포일 계산
             int day = (100 - progresses[i]) / speeds[i];
             day = (100 - progresses[i]) % speeds[i] > 0 ? day + 1 : day;
+            // int day = (int) Math.ceil((100 - progresses[i]) / speeds[i]);
             // queue에 넣기
             queue.add(day);
         }
