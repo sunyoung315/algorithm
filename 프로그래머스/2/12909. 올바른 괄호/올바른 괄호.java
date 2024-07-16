@@ -19,8 +19,6 @@ class Solution {
                 stack.push('(');
         }
         
-        if(!stack.isEmpty())
-            return false;
-        return true;
+        return stack.isEmpty();
     }
 }
