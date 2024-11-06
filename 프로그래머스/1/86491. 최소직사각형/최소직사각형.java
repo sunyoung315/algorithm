@@ -4,18 +4,15 @@ class Solution {
     public int solution(int[][] sizes) {
         int answer = 0;
         
-        int[] max = new int[sizes.length];
-        int[] min = new int[sizes.length];
+        int h = 0;
+        int w = 0;
         
         for(int i = 0; i < sizes.length; i++) {
-            max[i] = Math.max(sizes[i][0], sizes[i][1]);
-            min[i] = Math.min(sizes[i][0], sizes[i][1]);
+            h = Math.max(h, Math.max(sizes[i][0], sizes[i][1]));
+            w = Math.max(w, Math.min(sizes[i][0], sizes[i][1]));
         }
         
-        Arrays.sort(max);
-        Arrays.sort(min);
-        
-        return max[max.length - 1] * min[min.length - 1];
+        return h * w;
             
             
     }
