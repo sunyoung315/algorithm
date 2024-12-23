@@ -2,21 +2,8 @@
 SELECT id, email, first_name, last_name
   FROM developers
  WHERE skill_code & (
-         SELECT code
+         SELECT SUM(code)
            FROM skillcodes
-          WHERE name = 'Python'
-       ) = (
-         SELECT code
-           FROM skillcodes
-          WHERE name = 'Python'
-       )
-    OR skill_code & (
-         SELECT code
-           FROM skillcodes
-          WHERE name = 'C#'
-       ) = (
-         SELECT code
-           FROM skillcodes
-          WHERE name = 'C#'
-       )
+          WHERE name IN ('Python', 'C#')
+       ) <> 0
  ORDER BY id;
