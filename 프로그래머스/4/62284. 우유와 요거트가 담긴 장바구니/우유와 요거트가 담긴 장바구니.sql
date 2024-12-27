@@ -1,6 +1,12 @@
 -- 코드를 입력하세요
-SELECT m.CART_ID
-FROM (SELECT CART_ID, COUNT(NAME) AS MILK FROM CART_PRODUCTS WHERE NAME = 'Milk' GROUP BY CART_ID) m
-LEFT JOIN (SELECT CART_ID, COUNT(NAME) AS YOGURT FROM CART_PRODUCTS WHERE NAME = 'Yogurt' GROUP BY CART_ID) y
-ON m.CART_ID = y.CART_ID
-WHERE YOGURT IS NOT NULL;
+WITH my_cart AS (
+  SELECT DISTINCT cart_id, name
+    FROM cart_products
+   WHERE name = 'Milk'
+      OR name = 'Yogurt'
+)
+SELECT cart_id
+  FROM my_cart
+ GROUP BY cart_id
+HAVING COUNT(cart_id) >= 2
+ ORDER BY cart_id;
