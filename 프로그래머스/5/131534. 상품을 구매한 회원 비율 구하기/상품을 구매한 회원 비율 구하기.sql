@@ -1,12 +1,16 @@
 -- 코드를 입력하세요
-WITH CTE AS (
-    SELECT COUNT(*) AS TOTAL
-    FROM USER_INFO
-    WHERE YEAR(JOINED) = '2021'
+WITH join_cnt AS (
+  SELECT COUNT(user_id) AS cnt
+    FROM user_info
+   WHERE YEAR(joined) = 2021
 )
-SELECT YEAR(SALES_DATE) AS YEAR, MONTH(SALES_DATE) AS MONTH, COUNT(DISTINCT u.USER_ID) AS PURCHASED_USER, ROUND(COUNT(DISTINCT u.USER_ID) / (SELECT TOTAL FROM CTE), 1) AS PUCHASED_RATIO
-FROM ONLINE_SALE s LEFT JOIN USER_INFO u
-ON s.USER_ID = u.USER_ID 
-WHERE YEAR(JOINED) = '2021'
-GROUP BY YEAR, MONTH
-ORDER BY YEAR, MONTH;
+SELECT YEAR(sales_date) AS year, 
+       MONTH(sales_date) AS month,
+       COUNT(DISTINCT user_id) AS purchased_users,
+       ROUND(COUNT(DISTINCT user_id) / (SELECT cnt FROM join_cnt), 1) AS puchased_ratio
+  FROM online_sale
+ INNER JOIN user_info
+ USING (user_id)
+ WHERE YEAR(joined) = 2021
+ GROUP BY year, month
+       
