@@ -1,13 +1,10 @@
 -- 코드를 입력하세요
-WITH RECURSIVE CTE AS (
-    SELECT 0 AS HOUR
-    UNION ALL
-    SELECT HOUR + 1
-    FROM CTE
-    WHERE HOUR < 23
-)
-SELECT HOUR, IFNULL(COUNT(HOUR(DATETIME)), 0) AS COUNT
-FROM CTE LEFT JOIN ANIMAL_OUTS
-ON HOUR = HOUR(DATETIME)
-GROUP BY HOUR
-ORDER BY HOUR
+SET @hour = -1;
+
+SELECT (@hour := @hour + 1) AS hour, 
+       (SELECT COUNT(animal_id)
+          FROM animal_outs
+         WHERE HOUR(datetime) = @hour) AS count
+  FROM animal_outs
+ WHERE @hour < 23
+ ORDER BY hour;
