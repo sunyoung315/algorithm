@@ -1,11 +1,10 @@
 -- 코드를 작성해주세요
-WITH FE AS (
-    SELECT SUM(CODE) AS CODE
-    FROM SKILLCODES
-    WHERE CATEGORY = 'Front End'
+WITH fe AS (
+  SELECT code
+    FROM skillcodes
+   WHERE category = 'Front End'
 )
-
-SELECT ID, EMAIL, FIRST_NAME, LAST_NAME
-FROM DEVELOPERS
-WHERE SKILL_CODE & (SELECT CODE FROM FE) != 0
-ORDER BY ID;
+SELECT DISTINCT id, email, first_name, last_name
+  FROM developers, fe
+ WHERE skill_code & code = code
+ ORDER BY id;
