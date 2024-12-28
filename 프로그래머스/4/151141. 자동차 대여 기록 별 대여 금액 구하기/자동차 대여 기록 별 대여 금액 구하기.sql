@@ -1,12 +1,26 @@
 -- 코드를 입력하세요
-WITH CTE AS (
-    SELECT HISTORY_ID, CAR_TYPE, DAILY_FEE, (DATEDIFF(END_DATE, START_DATE) + 1) AS PERIOD
-    FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY h LEFT JOIN CAR_RENTAL_COMPANY_CAR c
-    ON h.CAR_ID = c.CAR_ID
-    WHERE CAR_TYPE = '트럭'
-)
-SELECT HISTORY_ID, ROUND((1- IFNULL(DISCOUNT_RATE, 0) / 100) * DAILY_FEE * PERIOD) AS FEE
-FROM CTE c LEFT JOIN CAR_RENTAL_COMPANY_DISCOUNT_PLAN d
-ON c.CAR_TYPE = d.CAR_TYPE 
-AND DURATION_TYPE = (CASE WHEN PERIOD >= 90 THEN '90일 이상' WHEN PERIOD >= 30 THEN '30일 이상' WHEN PERIOD >= 7 THEN '7일 이상' END)
-ORDER BY FEE DESC, HISTORY_ID DESC;
+SELECT history_id, 
+       ROUND(daily_fee * (DATEDIFF(end_date, start_date) + 1) * (
+         CASE
+           WHEN (DATEDIFF(end_date, start_date) + 1) >= 90
+           THEN (100 - (SELECT discount_rate
+                   FROM car_rental_company_discount_plan
+                  WHERE car_type = '트럭'
+                    AND duration_type = '90일 이상')) / 100
+           WHEN (DATEDIFF(end_date, start_date) + 1) >= 30
+           THEN (100 - (SELECT discount_rate
+                   FROM car_rental_company_discount_plan
+                  WHERE car_type = '트럭'
+                    AND duration_type = '30일 이상')) / 100
+           WHEN (DATEDIFF(end_date, start_date) + 1) >= 7
+           THEN (100 - (SELECT discount_rate
+                   FROM car_rental_company_discount_plan
+                  WHERE car_type = '트럭'
+                    AND duration_type = '7일 이상')) / 100
+           ELSE 1
+         END
+       )) AS fee
+  FROM car_rental_company_rental_history h, car_rental_company_car c
+ WHERE h.car_id = c.car_id
+   AND car_type = '트럭'
+ ORDER BY fee DESC, history_id DESC;
